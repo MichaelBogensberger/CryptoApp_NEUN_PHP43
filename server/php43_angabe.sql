@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Erstellungszeit: 10. Apr 2022 um 18:24
+-- Erstellungszeit: 11. Apr 2022 um 14:53
 -- Server-Version: 10.1.25-MariaDB
 -- PHP-Version: 7.2.9
 
@@ -91,7 +91,7 @@ ALTER TABLE `wallet`
 -- AUTO_INCREMENT für Tabelle `purchase`
 --
 ALTER TABLE `purchase`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT für Tabelle `wallet`
 --

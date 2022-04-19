@@ -2,6 +2,7 @@
 
 require_once 'DatabaseObject.php';
 
+
 class Purchase implements DatabaseObject, JsonSerializable
 {
     private $id;
@@ -10,6 +11,8 @@ class Purchase implements DatabaseObject, JsonSerializable
     private $price;
     //private $currency;
     private $wallet_id;
+
+    public $wallet;
 
     private $errors = [];
 
@@ -48,6 +51,24 @@ class Purchase implements DatabaseObject, JsonSerializable
         $stmt = $db->prepare($sql);
         $stmt->execute(array($this->date, $this->amount, $this->price, $this->wallet_id));
         $lastId = $db->lastInsertId();
+
+        $sql = "SELECT * FROM `purchase` WHERE wallet_id = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($this->wallet_id));
+        $items = $stmt->fetchAll(PDO::FETCH_CLASS, 'Purchase');
+
+        $price = 0;
+        $amount = 0;
+
+        foreach($items as $item) {
+            $price += $item->getPrice();
+            $amount += $item->getAmount();
+        }
+
+        $sql = "UPDATE wallet set amount = ?, price = ? WHERE id = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($amount, $price, $this->wallet_id));
+
         Database::disconnect();
         return $lastId;
     }
@@ -76,6 +97,12 @@ class Purchase implements DatabaseObject, JsonSerializable
         $stmt = $db->prepare($sql);
         $stmt->execute(array($id));
         $item = $stmt->fetchObject('Purchase');  // ORM
+
+        $sql = "SELECT * FROM wallet WHERE id = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($item->getWalletId()));
+        $item->wallet = $stmt->fetchObject();
+
         Database::disconnect();
         return $item !== false ? $item : null;
     }
@@ -180,6 +207,7 @@ class Purchase implements DatabaseObject, JsonSerializable
             "amount" => doubleval($this->amount),
             "price" => doubleval($this->price),
             "wallet_id" => doubleval($this->wallet_id),
+            "wallet" => $this->wallet
         ];
     }
 

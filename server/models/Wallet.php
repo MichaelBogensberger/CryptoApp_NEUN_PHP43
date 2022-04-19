@@ -113,6 +113,22 @@ class Wallet implements DatabaseObject, JsonSerializable
         return empty($items) ? false : $items;
     }
 
+    public function setAmountAndPrice() {
+        $items = Wallet::getAllPurchasesFromWallet($this->id);
+        $price = 0;
+        $amount = 0;
+
+        foreach($items as $item) {
+            $price += $item->getPrice();
+            $amount += $item->getAmount();
+        }
+
+        $sql = "UPDATE wallet set currency = ?, name = ?, amount = ?, price = ? WHERE id = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($this->currency, $this->name, $amount, $price, $this->id));
+
+    }
+
 
     public function jsonSerialize()
     {

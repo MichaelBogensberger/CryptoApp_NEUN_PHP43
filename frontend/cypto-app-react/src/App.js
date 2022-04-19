@@ -13,6 +13,7 @@ import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import ImageIcon from '@mui/icons-material/Image';
 import WorkIcon from '@mui/icons-material/Work';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
+import React2, { useState, useEffect } from 'react';
 
 
 function App() {
@@ -20,6 +21,8 @@ function App() {
     const [currency, setCurrency] = React.useState();
     const [wallet, setWallet] = React.useState();
     const [amount, setAmount] = React.useState();
+
+    const [data, setData] = useState(null);
   
     const handleChange = (tag) => (event) => {
 
@@ -34,6 +37,12 @@ function App() {
     };
 
 
+  useEffect(() => {
+    fetch(`http://localhost/cry/server/api/wallet/`)
+      .then((response) => response.json())
+      .then((actualData) => setData(actualData));
+    
+  }, []);
 
 
   return (
@@ -88,7 +97,7 @@ function App() {
                 label="wallet"
                 onChange={handleChange('wallet')}
               >
-                <MenuItem value={1}>BTC - Muchs Wallet</MenuItem>
+                <MenuItem value={1}></MenuItem>
                 <MenuItem value={2}>ETH - Noglass Wallet</MenuItem>
               </Select>
         </FormControl>

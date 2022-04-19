@@ -7,6 +7,9 @@ import {Button, Grid, Box, Paper, AppBar, Toolbar,Typography, IconButton, InputL
 MenuItem, FormControl, Select, TextField, Stack, Chip, List, ListItem, ListItemText, ListItemIcon, Divider, Avatar, ListItemAvatar
 } from '@mui/material';
 
+import {format} from 'date-fns';
+
+
 
 import MenuIcon from '@mui/icons-material/Menu';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
@@ -71,6 +74,8 @@ function App() {
 
       async function kaufen() {
         
+        var now = new Date();
+        now =  format(now, 'yyyy-MM-dd hh:mm:ss');
 
   
           const rawResponse = await fetch(url + '/purchase', {
@@ -79,21 +84,22 @@ function App() {
               'Accept': 'application/json',
               'Content-Type': 'application/json',
               'Access-Control-Allow-Origin': '*',
-              'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE',
+              'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
               'Access-Control-Allow-Headers': 'Content-Type'
             },
             body: JSON.stringify(
               {
-                "date": "2022-04-21 00:39:33",
-                "amount": amount,
+                "date": now,
+                "amount": Number(amount),
                 "price": currency,
-                "wallet_id": 1
+                "wallet_id": wallet
               }
             )
           });
 
 
           const content = await rawResponse.json();
+          apiGetAllWallets();
 
           console.log(content);
 

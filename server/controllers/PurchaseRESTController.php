@@ -27,6 +27,9 @@ class PurchaseRESTController extends RESTController
             case 'DELETE':
                 $this->handleDELETERequest();
                 break;
+            case 'OPTIONS':
+                    $this->response("OK", 201);
+                    break;
             default:
                 $this->response('Method Not Allowed', 405);
                 break;
@@ -68,7 +71,7 @@ class PurchaseRESTController extends RESTController
         $model->setWalletId($this->getDataOrNull('wallet_id'));
 
         if ($model->save()) {
-            $this->response("OK", 201);
+            $this->response("OKAY", 201);
         } else {
             $this->response($model->getErrors(), 400);
         }

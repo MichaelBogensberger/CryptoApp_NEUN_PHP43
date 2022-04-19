@@ -85,6 +85,9 @@ abstract class RESTController
                 $this->file = json_decode(file_get_contents("php://input"), true);
                 //$this->file = file_get_contents("php://input");
                 break;
+            case 'OPTIONS':
+                break;
+
             default:
                 throw new Exception('Method Not Allowed', 405);
         }

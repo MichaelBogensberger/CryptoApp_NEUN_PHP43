@@ -26,6 +26,9 @@ class WalletRESTController extends RESTController
             case 'DELETE':
                 $this->handleDELETERequest();
                 break;
+            case 'OPTIONS':
+                $this->response("OK", 201);
+                break;
             default:
                 $this->response('Method Not Allowed', 405);
                 break;

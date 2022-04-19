@@ -18,11 +18,13 @@ import React2, { useState, useEffect } from 'react';
 
 function App() {
 
-    const [currency, setCurrency] = React.useState();
-    const [wallet, setWallet] = React.useState();
-    const [amount, setAmount] = React.useState();
+    const [walletSum, setWalletSum] = React.useState(0);
 
-    const [data, setData] = useState(null);
+    const [currency, setCurrency] = React.useState(0);
+    const [wallet, setWallet] = React.useState();
+    const [amount, setAmount] = React.useState(0);
+
+   
   
     const handleChange = (tag) => (event) => {
 
@@ -36,17 +38,73 @@ function App() {
 
     };
 
+    const [wallets, setWallets] = useState([]);
 
-  useEffect(() => {
-    fetch(`http://localhost/cry/server/api/wallet/`)
-      .then((response) => response.json())
-      .then((actualData) => setData(actualData));
-    
-  }, []);
+
+    const url = 'http://localhost:8081/NEUN/php43_crypto/server/api';
+
+
+
+      useEffect(() => {
+        apiGetAllWallets();
+      }, [])
+
+ 
+      function apiGetAllWallets() {
+        fetch(url + `/wallet/`)
+          .then(res => res.json())
+          .then(
+            (result) => {
+              //console.log(result);
+              setWallets(result);
+
+              var sum = 0;
+              result.forEach((item, index)=>{
+                sum = sum + item.price;
+              })
+              setWalletSum(sum);
+
+            }
+          )
+      }
+
+
+      async function kaufen() {
+        
+
+  
+          const rawResponse = await fetch(url + '/purchase', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE',
+              'Access-Control-Allow-Headers': 'Content-Type'
+            },
+            body: JSON.stringify(
+              {
+                "date": "2022-04-21 00:39:33",
+                "amount": amount,
+                "price": currency,
+                "wallet_id": 1
+              }
+            )
+          });
+
+
+          const content = await rawResponse.json();
+
+          console.log(content);
+
+      }
+
 
 
   return (
     <div className="App">
+
+ 
 
 
     <Box sx={{ flexGrow: 1 }}>
@@ -58,6 +116,7 @@ function App() {
         </Toolbar>
       </AppBar>
     </Box>
+
 
 
       
@@ -97,8 +156,12 @@ function App() {
                 label="wallet"
                 onChange={handleChange('wallet')}
               >
-                <MenuItem value={1}></MenuItem>
-                <MenuItem value={2}>ETH - Noglass Wallet</MenuItem>
+
+        {wallets.map(item => (
+          <MenuItem value={item.id}>{item.name} - {item.currency}</MenuItem>
+        ))}
+
+
               </Select>
         </FormControl>
 
@@ -113,7 +176,7 @@ function App() {
 
 
         <FormControl variant="filled" style={{minWidth: 320}} className="main-select">
-          <Button variant="contained">kaufen</Button>
+          <Button variant="contained" onClick={kaufen} >kaufen</Button>
         </FormControl>
 
 
@@ -125,7 +188,9 @@ function App() {
         <Grid item md={4}
         >
           <Paper className="main-grid" elevation={24}>
-          <h1 className="main-grid-ueb">Wallets: 3402€</h1>
+          <h1 className="main-grid-ueb">Wallets: {walletSum}€</h1>
+
+        
 
 
         <Grid
@@ -145,32 +210,29 @@ function App() {
                   bgcolor: 'background.paper',
                 }}
               >
+
+
+
+            {wallets.map(item => (
                 <ListItem>
                   <ListItemAvatar>
                     <Avatar>
                       <PriceCheckIcon />
                     </Avatar>
                   </ListItemAvatar>
-                  <ListItemText primary="Bitcoins" secondary="0.05 BTC, 1752 €" />
+
+              
+                  <ListItemText primary={item.name} secondary={`Amount: ${item.amount}, Price: ${item.price}€`} />
                 </ListItem>
-                <Divider variant="inset" component="li" />
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <PriceCheckIcon />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText primary="Etherium" secondary="0.05 ETH, 1752 €" />
-                </ListItem>
-                <Divider variant="inset" component="li" />
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <PriceCheckIcon />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText primary="Monero" secondary="0.05 MONE, 1752 €" />
-                </ListItem>
+                
+                ))}
+
+              
+                          
+
+
+
+
               </List>
         </Grid>
 

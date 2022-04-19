@@ -1,7 +1,14 @@
 <?php
 
+
 require_once('RESTController.php');
 require_once('models/Purchase.php');
+
+header ("Access-Control-Allow-Origin: *");
+header ("Access-Control-Expose-Headers: Content-Length, X-JSON");
+header ("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
+header ("Access-Control-Allow-Headers: *");
+
 
 class PurchaseRESTController extends RESTController
 {
@@ -52,6 +59,7 @@ class PurchaseRESTController extends RESTController
      */
     private function handlePOSTRequest()
     {
+        
         $model = new Purchase();
         $model->setDate($this->getDataOrNull('date'));
         $model->setAmount($this->getDataOrNull('amount'));

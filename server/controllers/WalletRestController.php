@@ -3,6 +3,12 @@
 require_once('RESTController.php');
 require_once('models/Wallet.php');
 
+header ("Access-Control-Allow-Origin: *");
+header ("Access-Control-Expose-Headers: Content-Length, X-JSON");
+header ("Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS");
+header ("Access-Control-Allow-Headers: *");
+
+
 class WalletRESTController extends RESTController
 {
     public function handleRequest()
